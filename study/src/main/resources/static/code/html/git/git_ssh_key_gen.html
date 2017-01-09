@@ -1,0 +1,18 @@
+<h3>生成密钥</h3>
+<p>
+    检查是否生成过密钥
+<pre>$ cd ~/.ssh</pre>
+如果有则备份删除
+</p>
+<p>
+    生成密钥
+<pre>$ ssh-keygen -t rsa -C "email@example.com"</pre>
+</p>
+<p>
+    windows需要添加ssh-agent到bash
+<pre>$ ssh-agent bash --login -i</pre>
+添加密钥
+<pre>$ ssh-add ~/.ssh/id_dsa</pre>
+添加密钥至github
+<pre>https://github.com/</pre>
+</p>
