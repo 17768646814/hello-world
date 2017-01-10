@@ -1,0 +1,13 @@
+server:
+  port: 8888
+  contextPath: /
+spring:
+  jpa:
+    database: ORACLE
+#    database: MYSQL
+    show-sql: true
+  datasource:
+#    url: jdbc:mysql://101.200.221.153:3306/pch
+    url: jdbc:oracle:thin:@10.169.4.33:5001:dspdb
+    username: econe
+    password: password

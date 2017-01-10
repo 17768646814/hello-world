@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index.html</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body ng-controller="WelcomeController">
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <p class="navbar-text">Signed in as Mark Otto</p>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="panel panel-info">
+        <div class="panel-heading">git全局配置</div>
+        <div class="panel-body">
+            <pre ng-code="git_global_config.html"></pre>
+        </div>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">git ssh key 生成步骤</div>
+        <div class="panel-body">
+            <div ng-html="git_ssh_key_gen.html"></div>
+        </div>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">使用git</div>
+        <div class="panel-body">
+            <div ng-html="git_oper_crud.html"></div>
+        </div>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">window用户ssh命令无法使用怎么办？</div>
+        <div class="panel-body">
+            搜索"OpenSSH for Windows"下载安装
+        </div>
+    </div>
+</div>
+
+<script src="//cdn.bootcss.com/angular.js/1.6.1/angular.min.js"></script>
+<script>
+    var sc = null;
+    var app = angular.module('demo', [])
+            .controller('WelcomeController', function ($scope) {
+                sc = $scope;
+                sc.codeClass = "alert alert-warning jumbotron";
+            })
+            .directive('ngCode', function ($compile, $http) {
+                return {
+                    restrict: 'AC',
+                    compile: function ngBindCompile(templateElement) {
+                        $compile.$$addBindingClass(templateElement);
+                        return function ngBindLink(scope, element, attr) {
+                            var url = attr['ngCode'], url = (url.indexOf('/') == -1) ? 'code/html/git/' + url : url;
+                            $http.get(url)
+                                    .then(function (data) {
+                                        $compile.$$addBindingInfo(element, attr.ngCode);
+                                        element = element[0];
+                                        scope.$watch(attr.ngCode, function ngBindWatchAction(value) {
+                                            element.textContent = data.data;
+                                        });
+                                    }, function () {
+                                        alert('request code fail...');
+                                    });
+                        };
+                    }
+                };
+            })
+            .directive('ngHtml', function ($compile, $http) {
+                return {
+                    restrict: 'AC',
+                    compile: function ngBindCompile(templateElement) {
+                        $compile.$$addBindingClass(templateElement);
+                        return function ngBindLink(scope, element, attr) {
+                            var url = attr['ngHtml'], url = (url.indexOf('/') == -1) ? '/code/html/git/' + url : url;
+                            $http.get(url)
+                                    .then(function (data) {
+                                        $compile.$$addBindingInfo(element, attr.ngHtml);
+                                        element = element[0];
+                                        scope.$watch(attr.ngHtml, function ngBindWatchAction(value) {
+                                            element.innerHTML = data.data;
+                                        });
+                                    }, function () {
+                                        alert('request code fail...');
+                                    });
+                        };
+                    }
+                };
+            });
+    angular.bootstrap(document, ['demo']);
+</script>
+</body>
+</html>

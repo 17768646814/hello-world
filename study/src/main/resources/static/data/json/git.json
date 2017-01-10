@@ -1,0 +1,40 @@
+{
+  "id": "100",
+  "name": "git笔记",
+  "childs": [
+    {
+      "id": "110",
+      "name": "Git简介",
+      "htmlUrl": "git_intro.html"
+    },
+    {
+      "id": "111",
+      "name": "安装Git",
+      "htmlUrl": "git_install.html"
+    },
+    {
+      "id": "120",
+      "name": "配置Git",
+      "htmlUrl": "git_global_config.html"
+    },
+    {
+      "id": "130",
+      "name": "Git仓库",
+      "childs": [
+        {
+          "id": "131",
+          "name": "本地仓库",
+          "htmlUrl": "Git_oper_crud.html"
+        },
+        {
+          "id": "132",
+          "name": "远程仓库"
+        },
+        {
+          "id": "133",
+          "name": "本地关联远程"
+        }
+      ]
+    }
+  ]
+}

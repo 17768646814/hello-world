@@ -4,32 +4,52 @@
     <meta charset="UTF-8">
     <title>index.html</title>
     <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/index.css" rel="stylesheet">
 </head>
 <body ng-controller="WelcomeController">
 
+<nav ng-scroll="70" class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
+    <div class="container-fulid">
+        <p class="navbar-text" style="margin-right: 50px;">Hello World</p>
+        <ul class="nav navbar-nav">
+            <li ng-repeat="section in sections" ng-class="{'active': activeSection == section}" ng-click="clickSection(section);"><a href="javascript:void(0);">{{section.sectionName}}</a></li>
+        </ul>
+    </div>
+</nav>
+
 <div class="container">
-    <div class="panel panel-info">
-        <div class="panel-heading">git全局配置</div>
-        <div class="panel-body">
-            <pre ng-code="git_global_config.html"></pre>
+    <div class="row" ng-repeat="(key, json) in jsonData" ng-if="json" ng-show="activeSection.sectionId == key">
+        <div class="col-md-9">
+            <section>
+                <div ng-repeat="lv1 in json.childs" class="panel panel-info">
+                    <div class="panel-heading" id="{{lv1.id}}">{{lv1.name}}</div>
+                    <div class="panel-body">
+                        <div ng-if="lv1.htmlUrl" ng-html="{{lv1.htmlUrl}}"></div>
+                        <div ng-if="lv1.childs" ng-repeat="lv2 in lv1.childs" class="panel panel-default">
+                            <div class="panel-heading" id="{{lv2.id}}">{{lv2.name}}</div>
+                            <div class="panel-body">
+                                <div ng-if="lv2.htmlUrl" ng-html="{{lv2.htmlUrl}}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
-    </div>
-    <div class="panel panel-info">
-        <div class="panel-heading">git ssh key 生成步骤</div>
-        <div class="panel-body">
-            <div ng-html="git_ssh_key_gen.html"></div>
-        </div>
-    </div>
-    <div class="panel panel-info">
-        <div class="panel-heading">使用git</div>
-        <div class="panel-body">
-            <div ng-html="git_oper_crud.html"></div>
-        </div>
-    </div>
-    <div class="panel panel-info">
-        <div class="panel-heading">window用户ssh命令无法使用怎么办？</div>
-        <div class="panel-body">
-            搜索"OpenSSH for Windows"下载安装
+
+        <div class="col-md-3">
+            <aside style="position: fixed;">
+                <h1>{{json.name}}</h1>
+                <ul class="nav">
+                    <li ng-repeat="lv1 in json.childs" ng-class="{'active':lv1.id = activeMenu.id}"
+                        ng-click="clickMenu(lv1);">
+                        <a ng-href="#{{lv1.id}}">{{lv1.name}}</a>
+                        <ul style="margin-left: 30px;" class="nav" ng-if="lv1.childs">
+                            <li ng-repeat="lv2 in lv1.childs" ng-class="{'active':lv2.id = activeMenu.id}"
+                                ng-click="clickMenu(lv2);"><a href="#{{lv2.id}}">{{lv2.name}}</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </aside>
         </div>
     </div>
 </div>
@@ -38,30 +58,25 @@
 <script>
     var sc = null;
     var app = angular.module('demo', [])
-            .controller('WelcomeController', function ($scope) {
+            .controller('WelcomeController', function ($scope, $http) {
                 sc = $scope;
-                sc.codeClass = "alert alert-warning jumbotron";
-            })
-            .directive('ngCode', function ($compile, $http) {
-                return {
-                    restrict: 'AC',
-                    compile: function ngBindCompile(templateElement) {
-                        $compile.$$addBindingClass(templateElement);
-                        return function ngBindLink(scope, element, attr) {
-                            var url = attr['ngCode'], url = (url.indexOf('/') == -1) ? 'code/html/git/' + url : url;
-                            $http.get(url)
-                                    .then(function (data) {
-                                        $compile.$$addBindingInfo(element, attr.ngCode);
-                                        element = element[0];
-                                        scope.$watch(attr.ngCode, function ngBindWatchAction(value) {
-                                            element.textContent = data.data;
-                                        });
-                                    }, function () {
-                                        alert('request code fail...');
-                                    });
-                        };
-                    }
-                };
+                sc.sections = [{"sectionId": "git","sectionName":"Git"}, {"sectionId":"java","sectionName":"Java"}], sc.jsonData = {}, sc.activeSection = sc.sections[0], sc.activeMenu = null;
+                for (var i = 0; i < sc.sections.length; i++) {
+                    var sec = sc.sections[i].sectionId;
+                    var callBack = (function (sec) {
+                        return function (data) {
+                            sc.jsonData[sec] = data.data;
+//                            sc[sec + 'Json'] = data.data;
+                        }
+                    })(sec);
+                    $http.get('data/json/' + sec + '.json').then(callBack, null);
+                }
+                sc.clickSection = function (section) {
+                    sc.activeSection = section;
+                }
+                sc.clickMenu = function (menu) {
+                    activeMenu = menu;
+                }
             })
             .directive('ngHtml', function ($compile, $http) {
                 return {
@@ -69,21 +84,34 @@
                     compile: function ngBindCompile(templateElement) {
                         $compile.$$addBindingClass(templateElement);
                         return function ngBindLink(scope, element, attr) {
-                            var url = attr['ngHtml'], url = (url.indexOf('/') == -1) ? '/code/html/git/' + url : url;
+                            var url = attr['ngHtml'], url = (url.indexOf('/') == -1) ? 'code/html/git/' + url : url;
                             $http.get(url)
                                     .then(function (data) {
-                                        $compile.$$addBindingInfo(element, attr.ngHtml);
-                                        element = element[0];
-                                        scope.$watch(attr.ngHtml, function ngBindWatchAction(value) {
-                                            element.innerHTML = data.data;
+                                        scope.$watch(attr.ngCode, function ngBindWatchAction(value) {
+//                                            element[0].textContent = data.data;
+                                            element[0].innerHTML = data.data;
                                         });
-                                    }, function () {
-                                        alert('request code fail...');
-                                    });
+                                    }, null);
                         };
                     }
                 };
-            });
+            })
+            .directive('ngScroll', ['$window', function ($window) {
+                return {
+                    restrict: 'AC',
+                    compile: function (ele, attr) {
+                        $window = angular.element($window);
+                        $window.on('scroll', function (event) {
+                            if (attr['ngScroll'] < $window[0].scrollY) {
+                                ele.css({display: 'none'});
+                            } else {
+                                ele.css({display: ''});
+                            }
+                        });
+                    }
+                };
+            }
+            ]);
     angular.bootstrap(document, ['demo']);
 </script>
 </body>

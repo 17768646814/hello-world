@@ -1,2 +1,21 @@
-$ git config --global user.name "Your Name"
-$ git config --global user.email "email@example.com"
+<p>配置之前可以使用测试命令检查与Git的连接情况</p>
+<p>Git连接测试命令：
+<pre>$ ssh git@github.com</pre></p>
+<p>如果连接成功，可免去配置Git步骤</p>
+<h3>生成Git SSH Key</h3>
+<p>
+    首先配置Git的username和email
+<pre>$ git config --global user.name "17768646814"
+$ git config --global user.email "651158394@qq.com"</pre>
+然后生成SSH密钥
+<pre>$ ssh-keygen -t rsa -C "651158394@qq.com"</pre>
+此时会在~（用户目录，Windows下一般为C:/Users/域名）下生成.ssh文件夹。</p>
+<p>ssh文件夹内主要包含“id_rsa”和“id_rsa.pub”文件，id_rsa是私钥，需要添加私钥到ssh-agent所管理的session中
+<pre>ssh-add ~/.ssh/id_rsa</pre>
+如果报错：<code>Could not open a connection to your authentication agent.</code>，先执行
+<pre>eval `ssh-agent`</pre>
+或者
+<pre>ssh-agent bash --login -i</pre>
+（` => Tab上面那个键），在重新执行ssh-add命令
+id_rsa.pub是公钥，将里面的内容添加至Git官网上，在执行Git连接测试命令。
+</p>
