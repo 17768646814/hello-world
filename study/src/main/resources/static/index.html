@@ -40,11 +40,11 @@
             <aside style="position: fixed;">
                 <h1>{{json.name}}</h1>
                 <ul class="nav">
-                    <li ng-repeat="lv1 in json.childs" ng-class="{'active':lv1.id = activeMenu.id}"
+                    <li ng-repeat="lv1 in json.childs" ng-class="{'active':lv1.id == activeMenu.id}"
                         ng-click="clickMenu(lv1);">
                         <a ng-href="#{{lv1.id}}">{{lv1.name}}</a>
                         <ul style="margin-left: 30px;" class="nav" ng-if="lv1.childs">
-                            <li ng-repeat="lv2 in lv1.childs" ng-class="{'active':lv2.id = activeMenu.id}"
+                            <li ng-repeat="lv2 in lv1.childs" ng-class="{'active':lv2.id == activeMenu.id}"
                                 ng-click="clickMenu(lv2);"><a href="#{{lv2.id}}">{{lv2.name}}</a></li>
                         </ul>
                     </li>
