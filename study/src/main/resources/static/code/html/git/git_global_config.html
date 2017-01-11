@@ -11,11 +11,11 @@ $ git config --global user.email "651158394@qq.com"</pre>
 <pre>$ ssh-keygen -t rsa -C "651158394@qq.com"</pre>
 此时会在~（用户目录，Windows下一般为C:/Users/域名）下生成.ssh文件夹。</p>
 <p>ssh文件夹内主要包含“id_rsa”和“id_rsa.pub”文件，id_rsa是私钥，需要添加私钥到ssh-agent所管理的session中
-<pre>ssh-add ~/.ssh/id_rsa</pre>
+<pre>$ ssh-add ~/.ssh/id_rsa</pre>
 如果报错：<code>Could not open a connection to your authentication agent.</code>，先执行
-<pre>eval `ssh-agent`</pre>
+<pre>$ eval `ssh-agent`</pre>
 或者
-<pre>ssh-agent bash --login -i</pre>
+<pre>$ ssh-agent bash --login -i</pre>
 （` => Tab上面那个键），在重新执行ssh-add命令
 id_rsa.pub是公钥，将里面的内容添加至Git官网上，在执行Git连接测试命令。
 </p>

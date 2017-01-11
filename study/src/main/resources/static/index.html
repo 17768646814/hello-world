@@ -5,6 +5,8 @@
     <title>index.html</title>
     <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/index.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body ng-controller="WelcomeController">
 
@@ -12,16 +14,28 @@
     <div class="container-fulid">
         <p class="navbar-text" style="margin-right: 50px;">Hello World</p>
         <ul class="nav navbar-nav">
-            <li ng-repeat="section in sections" ng-class="{'active': activeSection == section}" ng-click="clickSection(section);"><a href="javascript:void(0);">{{section.sectionName}}</a></li>
+            <li ng-repeat="section in sections" ng-class="{'active': activeSection == section}"
+                ng-click="clickSection(section);"><a href="javascript:void(0);">{{section.sectionName}}</a></li>
+        </ul>
+        <div class="btn-group navbar-form navbar-left">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Charts<span
+                    class="caret"></span></button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="javascript:alert('not develop');" target="_blank">echarts</a></li>
+                <li><a href="highcharts.html" target="_blank">Highcharts</a></li>
+            </ul>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="javascript:alert('not develop');">网址收藏</a></li>
         </ul>
     </div>
 </nav>
 
 <div class="container">
-    <div class="row" ng-repeat="(key, json) in jsonData" ng-if="json" ng-show="activeSection.sectionId == key">
+    <div class="row" ng-repeat="json in sections" ng-if="json" ng-show="activeSection == json">
         <div class="col-md-9">
             <section>
-                <div ng-repeat="lv1 in json.childs" class="panel panel-info">
+                <div ng-repeat="lv1 in json.data.childs" class="panel panel-info">
                     <div class="panel-heading" id="{{lv1.id}}">{{lv1.name}}</div>
                     <div class="panel-body">
                         <div ng-if="lv1.htmlUrl" ng-html="{{lv1.htmlUrl}}"></div>
@@ -38,13 +52,13 @@
 
         <div class="col-md-3">
             <aside style="position: fixed;">
-                <h1>{{json.name}}</h1>
+                <h1>{{json.data.name}}</h1>
                 <ul class="nav">
-                    <li ng-repeat="lv1 in json.childs" ng-class="{'active':lv1.id == activeMenu.id}"
+                    <li ng-repeat="lv1 in json.data.childs" ng-class="{'active':lv1.id = activeMenu.id}"
                         ng-click="clickMenu(lv1);">
                         <a ng-href="#{{lv1.id}}">{{lv1.name}}</a>
                         <ul style="margin-left: 30px;" class="nav" ng-if="lv1.childs">
-                            <li ng-repeat="lv2 in lv1.childs" ng-class="{'active':lv2.id == activeMenu.id}"
+                            <li ng-repeat="lv2 in lv1.childs" ng-class="{'active':lv2.id = activeMenu.id}"
                                 ng-click="clickMenu(lv2);"><a href="#{{lv2.id}}">{{lv2.name}}</a></li>
                         </ul>
                     </li>
@@ -54,24 +68,40 @@
     </div>
 </div>
 
+<div class="container">
+    <a href="https://nodejs.org/en/download/" target="_blank"></a>
+    <a href="" target="_blank"></a>
+
+</div>
 <script src="//cdn.bootcss.com/angular.js/1.6.1/angular.min.js"></script>
 <script>
     var sc = null;
     var app = angular.module('demo', [])
             .controller('WelcomeController', function ($scope, $http) {
                 sc = $scope;
-                sc.sections = [{"sectionId": "git","sectionName":"Git"}, {"sectionId":"java","sectionName":"Java"}], sc.jsonData = {}, sc.activeSection = sc.sections[0], sc.activeMenu = null;
-                for (var i = 0; i < sc.sections.length; i++) {
-                    var sec = sc.sections[i].sectionId;
-                    var callBack = (function (sec) {
+                sc.sections = [{"sectionId": "git", "sectionName": "Git", "data": {}}, {
+                    "sectionId": "java",
+                    "sectionName": "Java"
+                }, {
+                    "sectionId": "nodejs",
+                    "sectionName": "Node.js"
+                }], sc.activeSection = sc.sections[0], sc.activeMenu = null;
+                for (var i = 0; i < 1/*sc.sections.length*/; i++) {
+                    initSection(sc.sections[i]);
+                }
+                function initSection(section) {
+                    var secId = section.sectionId;
+                    var callBack = (function (secId) {
                         return function (data) {
-                            sc.jsonData[sec] = data.data;
-//                            sc[sec + 'Json'] = data.data;
+                            section.data = data.data;
                         }
-                    })(sec);
-                    $http.get('data/json/' + sec + '.json').then(callBack, null);
+                    })(secId);
+                    $http.get('data/json/' + secId + '.json').then(callBack, null);
                 }
                 sc.clickSection = function (section) {
+                    if (!section.data || JSON.stringify(section.data) == '{}' || section.length == 0) {
+                        initSection(section);
+                    }
                     sc.activeSection = section;
                 }
                 sc.clickMenu = function (menu) {
