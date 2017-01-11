@@ -6,6 +6,11 @@
       "id": "110",
       "name": "项目环境",
       "htmlUrl": "code/html/java/java_frame.html"
+    },
+    {
+      "id": "120",
+      "name": "基本pom.xml配置",
+      "codeUrl": "code/xml/java/java_frame_base.xml"
     }
   ]
 }

@@ -26,7 +26,9 @@
             </ul>
         </div>
         <ul class="nav navbar-nav">
-            <li class="active"><a href="javascript:alert('not develop');">网址收藏</a></li>
+            <li class=""><a href="javascript:alert('not develop');">网址收藏</a></li>
+            <li class=""><a href="swagger-ui.html" target="_blank">swagger-ui</a></li>
+            <li class=""><a href="javascript:void(0);" data-toggle="modal" data-target="#instruction">说明</a></li>
         </ul>
     </div>
 </nav>
@@ -39,10 +41,12 @@
                     <div class="panel-heading" id="{{lv1.id}}">{{lv1.name}}</div>
                     <div class="panel-body">
                         <div ng-if="lv1.htmlUrl" ng-html="{{lv1.htmlUrl}}"></div>
+                        <pre ng-if="lv1.codeUrl" ng-code="{{lv1.codeUrl}}"></pre>
                         <div ng-if="lv1.childs" ng-repeat="lv2 in lv1.childs" class="panel panel-default">
                             <div class="panel-heading" id="{{lv2.id}}">{{lv2.name}}</div>
                             <div class="panel-body">
                                 <div ng-if="lv2.htmlUrl" ng-html="{{lv2.htmlUrl}}"></div>
+                                <pre ng-if="lv2.codeUrl" ng-code="{{lv2.codeUrl}}"></pre>
                             </div>
                         </div>
                     </div>
@@ -54,11 +58,11 @@
             <aside style="position: fixed;">
                 <h1>{{json.data.name}}</h1>
                 <ul class="nav">
-                    <li ng-repeat="lv1 in json.data.childs" ng-class="{'active':lv1.id = activeMenu.id}"
+                    <li ng-repeat="lv1 in json.data.childs" ng-class="{'active':lv1.id == activeMenu.id}"
                         ng-click="clickMenu(lv1);">
                         <a ng-href="#{{lv1.id}}">{{lv1.name}}</a>
                         <ul style="margin-left: 30px;" class="nav" ng-if="lv1.childs">
-                            <li ng-repeat="lv2 in lv1.childs" ng-class="{'active':lv2.id = activeMenu.id}"
+                            <li ng-repeat="lv2 in lv1.childs" ng-class="{'active':lv2.id == activeMenu.id}"
                                 ng-click="clickMenu(lv2);"><a href="#{{lv2.id}}">{{lv2.name}}</a></li>
                         </ul>
                     </li>
@@ -71,8 +75,29 @@
 <div class="container">
     <a href="https://nodejs.org/en/download/" target="_blank"></a>
     <a href="" target="_blank"></a>
-
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="instruction" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Dear all!</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    本网站共个人学习记录所用，源码挂在github上，您可以访问<a href="https://github.com/17768646814/hello-world" target="_blank">https://github.com/17768646814/hello-world</a>。
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="//cdn.bootcss.com/angular.js/1.6.1/angular.min.js"></script>
 <script>
     var sc = null;
@@ -117,9 +142,25 @@
                             var url = attr['ngHtml'], url = (url.indexOf('/') == -1) ? 'code/html/git/' + url : url;
                             $http.get(url)
                                     .then(function (data) {
-                                        scope.$watch(attr.ngCode, function ngBindWatchAction(value) {
-//                                            element[0].textContent = data.data;
+                                        scope.$watch(attr.ngHtml, function ngBindWatchAction(value) {
                                             element[0].innerHTML = data.data;
+                                        });
+                                    }, null);
+                        };
+                    }
+                };
+            })
+            .directive('ngCode', function ($compile, $http) {
+                return {
+                    restrict: 'AC',
+                    compile: function ngBindCompile(templateElement) {
+                        $compile.$$addBindingClass(templateElement);
+                        return function ngBindLink(scope, element, attr) {
+                            var url = attr['ngCode'], url = (url.indexOf('/') == -1) ? 'code/html/git/' + url : url;
+                            $http.get(url)
+                                    .then(function (data) {
+                                        scope.$watch(attr.ngCode, function ngBindWatchAction(value) {
+                                            element[0].textContent = data.data;
                                         });
                                     }, null);
                         };
@@ -143,6 +184,12 @@
             }
             ]);
     angular.bootstrap(document, ['demo']);
+
+
+
+
+
+
 </script>
 </body>
 </html>
