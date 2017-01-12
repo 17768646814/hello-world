@@ -12,4 +12,5 @@ import java.io.Serializable;
  */
 public abstract class BaseServiceImpl<M extends Serializable, PK extends Serializable> implements BaseService<M, PK> {
     abstract protected BaseDao<M, PK> getBaseDao();
+
 }

@@ -1,6 +1,7 @@
 package com.pch.common.service;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author uo712
@@ -9,4 +10,11 @@ import java.io.Serializable;
  */
 public interface BaseService<M extends Serializable, PK extends Serializable> {
 
+    M findOne(PK pk);
+
+    M save(M m);
+
+    List<M> save(Iterable<M> it);
+
+    List<M> findAll();
 }
