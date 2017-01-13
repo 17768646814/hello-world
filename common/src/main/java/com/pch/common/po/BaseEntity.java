@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 
 /**
@@ -12,6 +13,7 @@ import java.io.Serializable;
  * @version 1.0
  * @since 2017/1/9
  */
+@MappedSuperclass
 public class BaseEntity implements Serializable {
     private static final long serialVersionUID = -4743363790685901665L;
     private String id;
