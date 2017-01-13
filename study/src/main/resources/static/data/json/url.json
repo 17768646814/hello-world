@@ -1,0 +1,12 @@
+{
+  "id": "100",
+  "name": "网址收藏",
+  "noNav": true,
+  "childs": [
+    {
+      "id": "110",
+      "name": "网址收藏",
+      "htmlUrl": "code/html/url/url_collect.html"
+    }
+  ]
+}

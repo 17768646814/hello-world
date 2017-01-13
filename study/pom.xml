@@ -17,6 +17,12 @@
             <version>${com.pch.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.pch</groupId>
+            <artifactId>sys</artifactId>
+            <version>${com.pch.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

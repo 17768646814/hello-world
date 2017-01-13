@@ -5,17 +5,17 @@
     {
       "id": "110",
       "name": "Git简介",
-      "htmlUrl": "git_intro.html"
+      "htmlUrl": "code/html/git/git_intro.html"
     },
     {
       "id": "111",
       "name": "安装Git",
-      "htmlUrl": "git_install.html"
+      "htmlUrl": "code/html/git/git_install.html"
     },
     {
       "id": "120",
       "name": "配置Git",
-      "htmlUrl": "git_global_config.html"
+      "htmlUrl": "code/html/git/git_global_config.html"
     },
     {
       "id": "130",
@@ -24,7 +24,7 @@
         {
           "id": "131",
           "name": "本地仓库",
-          "htmlUrl": "git_oper_crud.html"
+          "htmlUrl": "code/html/git/git_oper_crud.html"
         },
         {
           "id": "132",

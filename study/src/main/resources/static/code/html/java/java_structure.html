@@ -1,0 +1,12 @@
+<h3>一、项目构建思想</h3>
+<p>以本网站为例，这是一个“hello-world”项目，作为一只刚出道不久的程序员，对代码世界充满好奇，各种技术都想尝试一遍，因此在构建本网站时使用了maven的多模块继承制，虽然作为个人开发来说没有必要，但是对于学习来说还是非常有帮助的。</p>
+<p>个人理解maven多模块继承制，一队人去打Boss，团长负责指挥，牧师加血，骑士加Buff，盗贼、法师输出，最终完成任务。</p>
+<p>“hello-world”被我分配为团长的角色，负责管理牧师、骑士和盗贼、法师，骑士叫“common”，任务是给盗贼“study”加buff，最终打Boss的任务交给了“study”。</p>
+<h3>二、构建项目</h3>
+<p>此处使用maven作为构建工具，可以使用命令行构建出基础项目
+<pre>$ mvn archetype:generate -DgroupId=com.pch -DartifactId=hello-world -DarchetypeGroupId=org.codehaus.mojo.archetypes -DarchetypeArtifactId=pom-root -DinteractiveMode=false</pre>
+耐心等待片刻，“hello-world”出现了，接下来团长使用idea导入项目，New > Module，分别召集“common”骑士和“study”盗贼，因为最终打Boss的是“study”，“hello-world”决定“study”以war包的形式存在，而将“common”定义为jar包，辅助“study”打Boss，如果团队输出或者奶不够，团长继续召集骑士、牧师或者法师和其他盗贼，一同完成打Boss任务。</p>
+<p>整个项目源码放在Github上，有兴趣的可以点击“说明”访问我的Git。</p>
+<p>
+    <img src="picture/java_frame_overview.png" alt="" width="100%">
+</p>

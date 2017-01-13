@@ -1,0 +1,6 @@
+<p>本项目使用了maven的继承制，因此在Debug App的main方式时或者在/study目录下运行mvn spring-boot:run会报错，原因是study引用了common，common以jar包的方式集成在study的war包中，所以需要先编译。
+<pre>$ cd ~/hello-world
+$ mvn clean install
+$ cd study
+$ mvn spring-boot:run</pre>
+mvn clean install之后即产生target文件夹，也可以使用Debug main方法的方式启动项目。</p>

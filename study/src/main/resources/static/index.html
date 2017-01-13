@@ -15,38 +15,38 @@
         <p class="navbar-text" style="margin-right: 50px;">Hello World</p>
         <ul class="nav navbar-nav">
             <li ng-repeat="section in sections" ng-class="{'active': activeSection == section}"
-                ng-click="clickSection(section);"><a href="javascript:void(0);">{{section.sectionName}}</a></li>
+                ng-click="clickSection(section);">
+                <a ng-if="!section.hasOwnProperty('href')" href="javascript:void(0);">{{section.sectionName}}</a>
+                <a ng-if="section.hasOwnProperty('href')" href="{{section.href}}" target="_blank">{{section.sectionName}}</a>
+            </li>
         </ul>
         <div class="btn-group navbar-form navbar-left">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Charts<span
                     class="caret"></span></button>
             <ul class="dropdown-menu" role="menu">
-                <li><a href="javascript:alert('not develop');" target="_blank">echarts</a></li>
+                <li><a href="echarts.html" target="_blank">echarts</a></li>
                 <li><a href="highcharts.html" target="_blank">Highcharts</a></li>
+                <li><a href="fusioncharts.html" target="_blank">FusionCharts</a></li>
             </ul>
         </div>
         <ul class="nav navbar-nav">
-            <li class=""><a href="javascript:alert('not develop');">网址收藏</a></li>
-            <li class=""><a href="swagger-ui.html" target="_blank">swagger-ui</a></li>
-            <li class=""><a href="javascript:void(0);" data-toggle="modal" data-target="#instruction">说明</a></li>
+            <li class=""><a href="#@@" data-toggle="modal" data-target="#instruction">说明</a></li>
         </ul>
     </div>
 </nav>
 
 <div class="container">
     <div class="row" ng-repeat="json in sections" ng-if="json" ng-show="activeSection == json">
-        <div class="col-md-9">
+        <div ng-class={"col-md-9":!json.data.noNav}>
             <section>
                 <div ng-repeat="lv1 in json.data.childs" class="panel panel-info">
-                    <div class="panel-heading" id="{{lv1.id}}">{{lv1.name}}</div>
+                    <div class="panel-heading" id="{{json.sectionId + lv1.id}}">{{lv1.name}}</div>
                     <div class="panel-body">
-                        <div ng-if="lv1.htmlUrl" ng-html="{{lv1.htmlUrl}}"></div>
-                        <pre ng-if="lv1.codeUrl" ng-code="{{lv1.codeUrl}}"></pre>
+                        <div ng-html="lv1"></div>
                         <div ng-if="lv1.childs" ng-repeat="lv2 in lv1.childs" class="panel panel-default">
-                            <div class="panel-heading" id="{{lv2.id}}">{{lv2.name}}</div>
+                            <div class="panel-heading" id="{{json.sectionId + lv2.id}}">{{lv2.name}}</div>
                             <div class="panel-body">
-                                <div ng-if="lv2.htmlUrl" ng-html="{{lv2.htmlUrl}}"></div>
-                                <pre ng-if="lv2.codeUrl" ng-code="{{lv2.codeUrl}}"></pre>
+                                <div ng-html="lv2"></div>
                             </div>
                         </div>
                     </div>
@@ -54,16 +54,16 @@
             </section>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-3" ng-if="!json.data.noNav">
             <aside style="position: fixed;">
                 <h1>{{json.data.name}}</h1>
                 <ul class="nav">
                     <li ng-repeat="lv1 in json.data.childs" ng-class="{'active':lv1.id == activeMenu.id}"
                         ng-click="clickMenu(lv1);">
-                        <a ng-href="#{{lv1.id}}">{{lv1.name}}</a>
+                        <a ng-href="#{{json.sectionId + lv1.id}}">{{lv1.name}}</a>
                         <ul style="margin-left: 30px;" class="nav" ng-if="lv1.childs">
                             <li ng-repeat="lv2 in lv1.childs" ng-class="{'active':lv2.id == activeMenu.id}"
-                                ng-click="clickMenu(lv2);"><a href="#{{lv2.id}}">{{lv2.name}}</a></li>
+                                ng-click="clickMenu(lv2);"><a href="#{{json.sectionId + lv2.id}}">{{lv2.name}}</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -88,7 +88,7 @@
             </div>
             <div class="modal-body">
                 <p>
-                    本网站共个人学习记录所用，源码挂在github上，您可以访问<a href="https://github.com/17768646814/hello-world" target="_blank">https://github.com/17768646814/hello-world</a>。
+                    本网站供个人学习记录所用，网站源码挂在github上，<a href="https://github.com/17768646814/hello-world" target="_blank">https://github.com/17768646814/hello-world</a>。
                 </p>
             </div>
             <div class="modal-footer">
@@ -110,6 +110,13 @@
                 }, {
                     "sectionId": "nodejs",
                     "sectionName": "Node.js"
+                }, {
+                    "sectionId": "url",
+                    "sectionName": "网址收藏"
+                }, {
+                    "sectionId": "url",
+                    "sectionName": "swagger",
+                    "href": "swagger-ui.html"
                 }], sc.activeSection = sc.sections[0], sc.activeMenu = null;
                 for (var i = 0; i < 1/*sc.sections.length*/; i++) {
                     initSection(sc.sections[i]);
@@ -123,11 +130,16 @@
                     })(secId);
                     $http.get('data/json/' + secId + '.json').then(callBack, null);
                 }
+
                 sc.clickSection = function (section) {
-                    if (!section.data || JSON.stringify(section.data) == '{}' || section.length == 0) {
-                        initSection(section);
+                    if (section.hasOwnProperty('href')) {
+
+                    } else {
+                        sc.activeSection = section;
+                        if (!section.data || JSON.stringify(section.data) == '{}' || section.length == 0) {
+                            initSection(section);
+                        }
                     }
-                    sc.activeSection = section;
                 }
                 sc.clickMenu = function (menu) {
                     activeMenu = menu;
@@ -139,30 +151,26 @@
                     compile: function ngBindCompile(templateElement) {
                         $compile.$$addBindingClass(templateElement);
                         return function ngBindLink(scope, element, attr) {
-                            var url = attr['ngHtml'], url = (url.indexOf('/') == -1) ? 'code/html/git/' + url : url;
-                            $http.get(url)
-                                    .then(function (data) {
-                                        scope.$watch(attr.ngHtml, function ngBindWatchAction(value) {
+                            var json = scope[attr['ngHtml']], url = '';
+                            var callBack = (function (scope, attr, json) {
+                                return function (data) {
+                                    scope.$watch(attr.ngHtml, function ngBindWatchAction(value) {
+                                        if (json.hasOwnProperty('codeUrl')) {
+                                            var pre = document.createElement("pre");
+                                            pre.textContent = data.data;
+                                            element.append(pre);
+                                        } else if (json.hasOwnProperty('htmlUrl')) {
                                             element[0].innerHTML = data.data;
-                                        });
-                                    }, null);
-                        };
-                    }
-                };
-            })
-            .directive('ngCode', function ($compile, $http) {
-                return {
-                    restrict: 'AC',
-                    compile: function ngBindCompile(templateElement) {
-                        $compile.$$addBindingClass(templateElement);
-                        return function ngBindLink(scope, element, attr) {
-                            var url = attr['ngCode'], url = (url.indexOf('/') == -1) ? 'code/html/git/' + url : url;
-                            $http.get(url)
-                                    .then(function (data) {
-                                        scope.$watch(attr.ngCode, function ngBindWatchAction(value) {
-                                            element[0].textContent = data.data;
-                                        });
-                                    }, null);
+                                        }
+                                    });
+                                }
+                            })(scope, attr, json);
+                            if (json.hasOwnProperty('codeUrl')) {
+                                url = json['codeUrl'];
+                            } else if (json.hasOwnProperty('htmlUrl')) {
+                                url = json['htmlUrl'];
+                            }
+                            $http.get(url).then(callBack, null);
                         };
                     }
                 };
@@ -184,11 +192,6 @@
             }
             ]);
     angular.bootstrap(document, ['demo']);
-
-
-
-
-
 
 </script>
 </body>
