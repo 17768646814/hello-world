@@ -2,6 +2,7 @@ package com.pch.sys.service;
 
 import com.pch.common.dao.BaseDao;
 import com.pch.common.service.impl.BaseServiceImpl;
+import com.pch.common.util.EntityUtil;
 import com.pch.sys.dao.LogDao;
 import com.pch.sys.po.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,12 @@ public class LogServiceImpl extends BaseServiceImpl<Log, String> implements LogS
 
     @Override
     public Log save(Log log) {
+        if(log.getData() == null || log.getData().isEmpty() || log.getcTime() == null || log.getcTime().isEmpty()) {
+            EntityUtil.saveBase(log);
+        }
+        if(log.getName() == null) {
+            log.setName("unknow");
+        }
         return logDao.save(log);
     }
 

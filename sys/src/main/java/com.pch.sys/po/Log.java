@@ -17,8 +17,6 @@ public class Log extends BaseEntity {
     private String url;
     private String name;
     private String data;
-    private String type;
-    private String code;
     private String des;
     private String userAgent;
 
@@ -56,24 +54,6 @@ public class Log extends BaseEntity {
 
     public void setData(String data) {
         this.data = data;
-    }
-
-    @Column(length = 100, nullable = false)
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    @Column(length = 100, nullable = false)
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     @Column(length = 200)
