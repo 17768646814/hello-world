@@ -11,6 +11,6 @@ import java.io.Serializable;
  * @since 2017/1/9
  */
 @NoRepositoryBean
-public interface BaseDao<M extends Serializable, PK extends Serializable> {
+public interface BaseDao<E extends Serializable, PK extends Serializable> {
     EntityManager getEntityManager();
 }

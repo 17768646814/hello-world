@@ -1,20 +1,25 @@
 package com.pch.common.service;
 
+import com.pch.common.po.PageResult;
+import com.pch.common.po.Result;
+import org.springframework.data.domain.Pageable;
+
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author uo712
  * @version 1.0
  * @since 2017/1/9
  */
-public interface BaseService<M extends Serializable, PK extends Serializable> {
+public interface BaseService<E extends Serializable, PK extends Serializable> {
 
-    M findOne(PK pk);
+    Result<E> findOne(PK pk);
 
-    M save(M m);
+    Result<E> save(E m);
 
-    List<M> save(Iterable<M> it);
+    Result<E> save(Iterable<E> it);
 
-    List<M> findAll();
+    Result<E> findAll();
+
+    PageResult<E> findAll(Pageable pageable);
 }

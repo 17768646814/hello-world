@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @since 2017/1/9
  */
 @MappedSuperclass
-public class BaseEntity implements Serializable {
+public abstract class BaseEntity implements Serializable {
     private static final long serialVersionUID = -4743363790685901665L;
     private String id;
     private String cDate;
@@ -66,5 +66,30 @@ public class BaseEntity implements Serializable {
 
     public void setcTime(String cTime) {
         this.cTime = cTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BaseEntity that = (BaseEntity) o;
+
+        return id.equals(that.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "BaseEntity{" +
+                "id='" + id + '\'' +
+                ", cDate='" + cDate + '\'' +
+                ", cTime='" + cTime + '\'' +
+                '}';
     }
 }

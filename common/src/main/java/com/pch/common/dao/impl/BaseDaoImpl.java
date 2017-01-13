@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @version 1.0
  * @since 2017/1/9
  */
-public abstract class BaseDaoImpl<M extends Serializable, PK extends Serializable> implements BaseDao<M, PK> {
+public abstract class BaseDaoImpl<E extends Serializable, PK extends Serializable> implements BaseDao<E, PK> {
     private static Logger LOGGER = LoggerFactory.getLogger(BaseDaoImpl.class);
 
     @PersistenceContext
@@ -24,5 +24,5 @@ public abstract class BaseDaoImpl<M extends Serializable, PK extends Serializabl
         return em;
     }
 
-    abstract protected Class<M> getEntityClass();
+    abstract protected Class<E> getEntityClass();
 }
