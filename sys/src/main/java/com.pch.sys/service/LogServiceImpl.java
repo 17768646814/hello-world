@@ -1,14 +1,14 @@
 package com.pch.sys.service;
 
 import com.pch.common.dao.BaseDao;
+import com.pch.common.po.Result;
 import com.pch.common.service.impl.BaseServiceImpl;
 import com.pch.common.util.EntityUtil;
+import com.pch.common.util.ResultUtil;
 import com.pch.sys.dao.LogDao;
 import com.pch.sys.po.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * @author uo712
@@ -27,29 +27,14 @@ public class LogServiceImpl extends BaseServiceImpl<Log, String> implements LogS
     }
 
     @Override
-    public Log findOne(String id) {
-        return logDao.findOne(id);
-    }
-
-    @Override
-    public Log save(Log log) {
-        if(log.getData() == null || log.getData().isEmpty() || log.getcTime() == null || log.getcTime().isEmpty()) {
+    public Result<Log> save(Log log) {
+        if (log.getData() == null || log.getData().isEmpty() || log.getcTime() == null || log.getcTime().isEmpty()) {
             EntityUtil.saveBase(log);
         }
-        if(log.getName() == null) {
+        if (log.getName() == null) {
             log.setName("unknow");
         }
-        return logDao.save(log);
-    }
-
-    @Override
-    public List<Log> save(Iterable<Log> it) {
-        return logDao.save(it);
-    }
-
-    @Override
-    public List<Log> findAll() {
-        return logDao.findAll();
+        return ResultUtil.getResult(logDao.save(log));
     }
 
 }
