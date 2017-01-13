@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -25,10 +28,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     private LogService logService;
 
     @Bean
-    public FilterRegistrationBean paramFilter(){
+    public FilterRegistrationBean paramFilter() {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setFilter(new ParamFilter());
-        filterRegistrationBean.setUrlPatterns(Arrays.asList("/**"));
+        filterRegistrationBean.setUrlPatterns(Arrays.asList("/*"));
         HttpServletRequest request;
         return filterRegistrationBean;
     }
@@ -38,4 +41,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(new LogInterceptor(logService)).addPathPatterns("/**");
     }
 
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedHeaders("*")
+                .allowedOrigins("*")
+                .allowCredentials(true)
+                .allowedMethods("*")
+                .maxAge(60 * 60)
+        ;
+    }
 }

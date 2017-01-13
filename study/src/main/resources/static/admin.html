@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index.html</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body ng-controller="WelcomeController" style="padding-top: 100px;">
+
+<nav ng-scroll="70" class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
+    <div class="container-fulid">
+        <p class="navbar-text" style="margin-right: 50px;"><a href="index.html">首页</a></p>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <section>
+                <table class="table table-bordered table-hover table-responsive" ng-page="log">
+                    <thead>
+                    <tr>
+                        <th>时间</th>
+                        <th>ip</th>
+                        <th>url</th>
+                        <th>名称</th>
+                        <th>参数</th>
+                        <th>描述</th>
+                        <th>浏览器类型</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="tr in log.content">
+                        <td>{{tr.cDate + ' ' +tr.cTime}}</td>
+                        <td>{{tr.ip}}</td>
+                        <td>{{tr.url}}</td>
+                        <td>{{tr.name}}</td>
+                        <td>{{tr.data}}</td>
+                        <td>{{tr.des}}</td>
+                        <td>{{tr.userAgent}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script src="//cdn.bootcss.com/angular.js/1.6.1/angular.min.js"></script>
+<script>
+    var sc = null;
+    var app = angular.module('demo', [])
+            .controller('WelcomeController', function ($scope, $http) {
+                sc = $scope;
+                sc['log'] = {
+                    url: 'http://localhost:80/log/findAllPage'
+                };
+            })
+            .directive('ngPage', function ($compile, $http) {
+                return {
+                    restrict: 'AC',
+                    compile: function ngBindCompile(templateElement) {
+                        $compile.$$addBindingClass(templateElement);
+                        return function ngBindLink(scope, element, attr) {
+                            var key = attr['ngPage'], config = sc[key];
+                            var callBack = (function (scope, attr) {
+                                return function (data) {
+                                    scope.$watch(attr['ngPage'], function ngBindWatchAction(value) {
+                                        sc[key] = data.data;
+                                    });
+                                }
+                            })(scope, attr);
+                            $http({
+                                method: 'POST',
+                                url: config['url']/*,
+                                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}*/
+                            }).then(callBack, null);
+                        };
+                    }
+                };
+            })
+            .directive('ngScroll', ['$window', function ($window) {
+                return {
+                    restrict: 'AC',
+                    compile: function (ele, attr) {
+                        $window = angular.element($window);
+                        $window.on('scroll', function (event) {
+                            if (attr['ngScroll'] < $window[0].scrollY) {
+                                ele.css({display: 'none'});
+                            } else {
+                                ele.css({display: ''});
+                            }
+                        });
+                    }
+                };
+            }
+            ]);
+    angular.bootstrap(document, ['demo']);
+</script>
+</body>
+</html>
