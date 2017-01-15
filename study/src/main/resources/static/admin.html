@@ -41,19 +41,51 @@
                     </tr>
                     </tbody>
                 </table>
+                <div page-foot="log"></div>
             </section>
         </div>
     </div>
 </div>
-
 <script src="//cdn.bootcss.com/angular.js/1.6.1/angular.min.js"></script>
 <script>
     var sc = null;
-    var app = angular.module('demo', [])
+    var app = angular.module('demo', [], function($httpProvider){
+                $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+                $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+                var param = function(obj) {
+                    var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
+                    for(name in obj) {
+                      value = obj[name];
+                      if(value instanceof Array) {
+                        for(i=0; i < value.length;i++){
+                          subValue = value[i];
+                          fullSubName = name + '[' + i + ']';
+                          innerObj = {};
+                          innerObj[fullSubName] = subValue;
+                          query += param(innerObj) + '&';
+                        }
+                      } else if(value instanceof Object) {
+                        for(subName in value) {
+                          subValue = value[subName];
+                          fullSubName = name + '[' + subName + ']';
+                          innerObj = {};
+                          innerObj[fullSubName] = subValue;
+                          query += param(innerObj) + '&';
+                        }
+                      } else if(value !== undefined && value !== null) {
+                        query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
+                      }
+                    }
+                    return query.length ? query.substr(0, query.length - 1) : query;
+                };
+                $httpProvider.defaults.transformRequest = [function(data) {
+                    return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
+                }];
+            })
             .controller('WelcomeController', function ($scope, $http) {
                 sc = $scope;
                 sc['log'] = {
-                    url: 'http://localhost:80/log/findAllPage'
+                    url: 'http://localhost:8080/log/findAllPage'
                 };
             })
             .directive('ngPage', function ($compile, $http) {
@@ -62,20 +94,53 @@
                     compile: function ngBindCompile(templateElement) {
                         $compile.$$addBindingClass(templateElement);
                         return function ngBindLink(scope, element, attr) {
-                            var key = attr['ngPage'], config = sc[key];
+                            var key = attr['ngPage'], config = {
+                                "number": 0,
+                                "size": 10,
+                                "findPage": function(number) {
+                                    if(number !== 0 && !number) {
+                                        number = scope[key].number;
+                                    }else if(number < 0) {
+                                        number = 0;
+                                    }else if(number >= scope[key].totalPages) {
+                                        number = scope[key].totalPages -1;
+                                    }
+                                    $http({
+                                        method: 'POST',
+                                        url: scope[key]['url'],
+                                        data: {
+                                            page: number,
+                                            size: sc[key].size
+                                        }
+                                    }).then(callBack, null);
+                                }
+                            };
+                            scope[key] = angular.extend(config, scope[key]);
                             var callBack = (function (scope, attr) {
                                 return function (data) {
                                     scope.$watch(attr['ngPage'], function ngBindWatchAction(value) {
-                                        sc[key] = data.data;
+                                        scope[key] = angular.extend(scope[key], data.data);
+                                        scope[key].listPages=[];
+                                        for(var i=0;i< scope[key].totalPages;i++){
+                                            if(i - scope[key].number<5 && scope[key].number - i < 5)
+                                            scope[key].listPages.push(i);
+                                        }
                                     });
                                 }
                             })(scope, attr);
-                            $http({
-                                method: 'POST',
-                                url: config['url']/*,
-                                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}*/
-                            }).then(callBack, null);
+                            scope[key].findPage();
                         };
+                    }
+                };
+            })
+            .directive('pageFoot', function(){
+                return {
+                    restrict: 'AE',
+                    scope: {
+                        'page': '=pageFoot'
+                    },
+                    templateUrl: function(elem, attr) {
+                        return 'common/page_foot.html';
                     }
                 };
             })
@@ -93,8 +158,7 @@
                         });
                     }
                 };
-            }
-            ]);
+            }]);
     angular.bootstrap(document, ['demo']);
 </script>
 </body>

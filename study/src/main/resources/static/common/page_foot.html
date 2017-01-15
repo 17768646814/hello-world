@@ -1,0 +1,11 @@
+<div class="text-center">
+    <nav>
+        <ul class="pagination">
+            <li><a href="#@" ng-if="!page.first" ng-click="page.findPage(page.number - 1);">&laquo;</a></li>
+            <li ng-class="{'disabled':false, 'active': page.number == lp}" ng-repeat="lp in page.listPages" ng-click="page.findPage(lp);">
+                <a href="#@">{{lp+1}}</a>
+            </li>
+            <li><a href="#@" ng-if="!page.lastO" ng-click="page.findPage(page.number + 1);">&raquo;</a></li>
+        </ul>
+    </nav>
+</div>

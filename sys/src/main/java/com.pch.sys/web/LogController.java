@@ -36,7 +36,7 @@ public class LogController {
 
     @RequestMapping(value = "/findAllPage", method = {RequestMethod.POST, RequestMethod.GET})
     @ApiOperation(value = "查询所有（分页）", notes = "log.findAllPage")
-    public PageResult<Log> findAllPage(@ApiParam(name = "page", value = "第n页", required = false, defaultValue = "1") @RequestParam(required = false, defaultValue = "1") int page,
+    public PageResult<Log> findAllPage(@ApiParam(name = "page", value = "第n页", required = false, defaultValue = "0") @RequestParam(required = false, defaultValue = "0") int page,
                                        @ApiParam(name = "size", value = "每页n条", required = false, defaultValue = "10") @RequestParam(required = false, defaultValue = "10") int size,
                                        @ApiParam(name = "sort", value = "按照？排序", required = false, defaultValue = "cDate,cTime") @RequestParam(required = false, defaultValue = "cDate,cTime") String sort) {
         PageRequest pageRequest = new PageRequest(page, size, new Sort(Sort.Direction.DESC, /*sort.split(",")*/"cDate"));
