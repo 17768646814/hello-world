@@ -22,10 +22,11 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping("/")
-@Api(value = "测试类",tags = "测试接口")
+@Api(value = "home",tags = "测试")
 public class HomeController {
 
-    @RequestMapping(value = "", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "", method = {RequestMethod.GET})
+    @ApiOperation(value = "重定向：index.html", notes = "home.hello")
     public ModelAndView hello(@RequestParam(required = false, defaultValue = "") String params, @RequestParam(required = false, defaultValue = "") String jsonParams,RedirectAttributes attr) {
         String url = "redirect:/index.html";
         if(!params.isEmpty()) {
@@ -38,7 +39,7 @@ public class HomeController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/say", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/say", method = {RequestMethod.GET})
     @ApiOperation(value = "默认页面", notes = "home.say")
     public String say(@ApiParam(name = "word",value = "语句",required = false) @RequestParam(required = false, defaultValue = "nothing") String word) {
         return String.format("you said => %s", word);
