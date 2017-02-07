@@ -18,6 +18,11 @@
       "htmlUrl": "code/html/git/git_global_config.html"
     },
     {
+      "id": "140",
+      "name": "创建版本库",
+      "htmlUrl": "code/html/git/git_global_config.html"
+    },
+    {
       "id": "130",
       "name": "Git仓库",
       "childs": [

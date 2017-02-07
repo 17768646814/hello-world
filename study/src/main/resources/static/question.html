@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/highcharts/5.0.6/highcharts.js"></script>
+<script src="//cdn.bootcss.com/highcharts/5.0.6/modules/exporting.js"></script>
+<!--<script src="//cdn.bootcss.com/highcharts/5.0.6/js/themes/dark-unica.js"></script>-->
+
+<div class="container">
+    <div class="row">
+        <div id="rate" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </div>
+    <div class="row">
+        <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        <div class="text-center" id="btn-group">
+            <button class="btn btn-default" data-month="3">近3个月</button>
+            <button class="btn btn-default" data-month="6">近6个月</button>
+            <button class="btn btn-default" data-month="12">近1年</button>
+            <button class="btn btn-default" data-month="36">近3年</button>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"), r = window.location.search.substr(1).match(reg);
+        return r != null ? decodeURIComponent(r[2]) : r;
+    }
+    function getDate10(date) {
+        var y = String(date.getFullYear()), m = String(date.getMonth() + 1), d = String(date.getDate());
+        m = m.length == 1 ? '0' + m : m;
+        d = d.length == 1 ? '0' + d : d;
+        return y + '-' + m + '-' + d;
+    }
+    function getMonthBefore(date, month) {
+        var y = date.getFullYear(), m = date.getMonth(), d = date.getDate(), month = Number(month);
+        while ((m -= month) < 0) m += 12 * (y - --y) + month;
+        return new Date(y, m, d);
+    }
+    function str10ToDate(str) {
+        return Date.UTC(str.substr(0, 4), str.substr(5, 2) - 1, str.substr(8, 2));
+    }
+    var fund = null;
+    var data = {
+        'fundCode': getQueryString("fundCode"),
+        'bdate': getDate10(getMonthBefore(new Date(), 12 * 3)),
+        'edate': getDate10(new Date())
+    };
+    var option = {
+        chart: {
+            zoomType: 'x'
+        },
+        credits: {
+            enabled: false
+        },
+        xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: {
+                millisecond: '%H:%M:%S.%L',
+                second: '%H:%M:%S',
+                minute: '%H:%M',
+                hour: '%H:%M',
+                day: '%Y-%m-%d',
+                week: '%Y-%m-%d',
+                month: '%Y-%m',
+                year: '%Y'
+            }
+        },
+        tooltip: {
+            dateTimeLabelFormats: {
+                millisecond: '%H:%M:%S.%L',
+                second: '%H:%M:%S',
+                minute: '%H:%M',
+                hour: '%H:%M',
+                day: '%Y-%m-%d',
+                week: '%Y-%m-%d',
+                month: '%Y-%m',
+                year: '%Y'
+            }
+        },
+        yAxis: {
+            title: {
+                text: ''
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        plotOptions: {
+            area: {
+                fillColor: {
+                    linearGradient: {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 1
+                    },
+                    stops: [
+                        [0, Highcharts.getOptions().colors[0]],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    ]
+                },
+                marker: {
+                    radius: 2
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                thnetWorthhold: null
+            }
+        }
+    };
+    var $btn = $('div#btn-group button');
+    $btn.click(function () {
+        $btn.removeClass('active');
+        var month = $(this).addClass('active').attr('data-month');
+        initData(month);
+    });
+    function initData(month) {
+        var netWorth = {
+                    title: {
+                        text: '基金历史数据'
+                    },
+                    'series': [
+                        {
+                            'name': '单位净值',
+                            'type': 'area',
+                            'data': []
+                        }, {
+                            'name': '累计净值',
+                            'type': 'area',
+                            'data': []
+                        }]
+                },
+                netWorthRate = {
+                    title: {
+                        text: '基金收益率'
+                    },
+                    tooltip: {
+                        valueSuffix: '%'
+                    },
+                    'yAxis': {
+                        title: {
+                            text: ''
+                        },
+                        labels: {
+                            formatter: function () {
+                                return this.value + '%';
+                            }
+                        }
+                    },
+                    'series': [
+                        {
+                            'name': '净值增长率',
+                            'type': 'area',
+                            'data': []
+                        }]
+                };
+        var start = getDate10(getMonthBefore(new Date(), month));
+        for (var i = 0; i < fund.length; i++) {
+            var f = fund[i];
+            if (start <= f.PublishDate.substr(0, 10)) {
+                netWorth.series[0].data.push([str10ToDate(f.PublishDate), f.nav1]);
+                netWorth.series[1].data.push([str10ToDate(f.PublishDate), f.nav2]);
+            }
+        }
+        var first = 0, flag = false;
+        for (var i = 0; i < fund.length; i++) {
+            var f = fund[i];
+            if (!flag && start <= f.PublishDate.substr(0, 10)) {
+                first = f.nav2;
+                flag = true;
+                netWorthRate.series[0].data.push([str10ToDate(f.PublishDate), 0]);
+            }
+            if (flag) {
+                netWorthRate.series[0].data.push([str10ToDate(f.PublishDate), Math.round((f.nav2 / first - 1) * 10000) / 100]);
+            }
+        }
+        var opt = {}, opt1 = {};
+        $.extend(opt, option);
+        $.extend(opt1, option);
+        $.extend(opt, netWorth);
+        $('#container').highcharts(opt);
+        $.extend(opt1, netWorthRate);
+        $('#rate').highcharts(opt1);
+    }
+    function load(data) {
+        $.ajax({
+            'url': 'http://localhost:8066/web/fund/query/queryNav',
+            'dataType': 'jsonp',
+            'data': data
+        }).success(function (obj) {
+            fund = obj.items;
+            $($btn[0]).click()
+        });
+    }
+    $(function () {
+        load(data);
+    });
+</script>
+</body>
+</html>

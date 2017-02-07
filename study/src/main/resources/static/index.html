@@ -27,6 +27,7 @@
                 <li><a href="echarts.html" target="_blank">echarts</a></li>
                 <li><a href="highcharts.html" target="_blank">Highcharts</a></li>
                 <li><a href="fusioncharts.html" target="_blank">FusionCharts</a></li>
+                <li><a href="question.html" target="_blank">Highcharts实例</a></li>
             </ul>
         </div>
         <ul class="nav navbar-nav">
@@ -100,34 +101,38 @@
     var app = angular.module('demo', [])
             .controller('WelcomeController', function ($scope, $http, $timeout) {
                 sc = $scope;
-                sc.sections = [{"sectionId": "git", "sectionName": "Git", "data": {}}, {
-                    "sectionId": "java",
-                    "sectionName": "Java"
-                }, {
-                    "sectionId": "nodejs",
-                    "sectionName": "Node.js"
-                }, {
-                    "sectionId": "url",
-                    "sectionName": "网址收藏"
-                }, {
-                    "sectionId": "url",
-                    "sectionName": "swagger",
-                    "href": "http://localhost:8080/swagger-ui.html"
-                }, {
-                    "sectionId": "nginx",
-                    "sectionName": "nginx笔记"
-                }, {
-                    "sectionId": "mac",
-                    "sectionName": "mac"
-                }], sc.activeSection = sc.sections[0], sc.activeMenu = null;
-                for (var i = 0; i < 1/*sc.sections.length*/; i++) {
-                    initSection(sc.sections[i]);
-                }
-                $timeout(function () {
-                    for (var i = 1; i < sc.sections.length; i++) {
+                sc.config = {};
+                $http.get('data/json/' + 'config' + '.json').then(function(data){
+                    sc.config=data.data,
+                    sc.sections = [{"sectionId": "git", "sectionName": "Git", "data": {}}, {
+                        "sectionId": "java",
+                        "sectionName": "Java"
+                    }, {
+                        "sectionId": "nodejs",
+                        "sectionName": "Node.js"
+                    }, {
+                        "sectionId": "url",
+                        "sectionName": "网址收藏"
+                    }, {
+                        "sectionId": "url",
+                        "sectionName": "swagger",
+                        "href": sc.config.baseUrl + "/swagger-ui.html"
+                    }, {
+                        "sectionId": "nginx",
+                        "sectionName": "nginx笔记"
+                    }, {
+                        "sectionId": "mac",
+                        "sectionName": "mac"
+                    }], sc.activeSection = sc.sections[0], sc.activeMenu = null;
+                    for (var i = 0; i < 1/*sc.sections.length*/; i++) {
                         initSection(sc.sections[i]);
                     }
-                }, 1000);
+                    $timeout(function () {
+                        for (var i = 1; i < sc.sections.length; i++) {
+                            initSection(sc.sections[i]);
+                        }
+                    }, 1000);
+                }, null);
                 function initSection(section) {
                     var secId = section.sectionId;
                     var callBack = (function (secId) {
@@ -137,7 +142,6 @@
                     })(secId);
                     $http.get('data/json/' + secId + '.json').then(callBack, null);
                 }
-
                 sc.clickSection = function (section) {
                     if (section.hasOwnProperty('href')) {
 
