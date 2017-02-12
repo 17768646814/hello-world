@@ -1,7 +1,0 @@
-com/pch/sys/po/Log.class
-com/pch/sys/dao/LogDao.class
-com/pch/sys/service/LogService.class
-com/pch/sys/web/LogController.class
-com/pch/sys/service/LogServiceImpl.class
-com/pch/sys/dao/LogDaoCustom.class
-com/pch/sys/dao/LogDaoImpl.class

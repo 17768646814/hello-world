@@ -3,6 +3,10 @@ server:
   port: 8080
   contextPath: /
 spring:
+  mail:
+    default-encoding: UTF-8
+    host: 10.163.134.180
+    port: 25
   http:
     multipart:
       max-file-size: 100Mb

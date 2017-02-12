@@ -18,28 +18,9 @@
       "htmlUrl": "code/html/git/git_global_config.html"
     },
     {
-      "id": "140",
-      "name": "创建版本库",
-      "htmlUrl": "code/html/git/git_global_config.html"
-    },
-    {
       "id": "130",
-      "name": "Git仓库",
-      "childs": [
-        {
-          "id": "131",
-          "name": "本地仓库",
-          "htmlUrl": "code/html/git/git_oper_crud.html"
-        },
-        {
-          "id": "132",
-          "name": "远程仓库"
-        },
-        {
-          "id": "133",
-          "name": "本地关联远程"
-        }
-      ]
+      "name": "使用git",
+      "htmlUrl": "code/html/git/git_oper_crud.html"
     }
   ]
 }
