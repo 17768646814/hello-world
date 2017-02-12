@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 A First Level Header
 ====================
 A Second Level Header
@@ -26,3 +27,16 @@ dog's back.
 This is an [example link](http://example.com/).
 
 `<xml>`
+=======
+# hello-world
+
+## 标题2
+
+* 1
+* 2
+* 3
+
+
+[this is the link](https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet)
+![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+>>>>>>> 781c2268e8c32ae9d1fc7bc0574dd3ac015c0cad

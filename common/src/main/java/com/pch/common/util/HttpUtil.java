@@ -28,6 +28,15 @@ public class HttpUtil {
         return map.toString();
     }
 
+    public static Map<String, String> getParameterMap(HttpServletRequest req) {
+        Map<String, String> map = new HashMap<>();
+        Set<String> fieldSet = new HashSet<>();
+        for (Map.Entry<String, String[]> entry : req.getParameterMap().entrySet()) {
+            map.put(entry.getKey(), StringUtil.join(entry.getValue()));
+        }
+        return map;
+    }
+
     public static String getIp(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {

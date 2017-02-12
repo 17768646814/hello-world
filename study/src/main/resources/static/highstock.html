@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/highcharts/5.0.6/highcharts.js"></script>
+<!--<script src="//cdn.bootcss.com/highcharts/5.0.6/highstock.js"></script>-->
+<script src="//cdn.bootcss.com/highcharts/5.0.6/modules/exporting.js"></script>
+<style>
+ 
+</style>
+
+<div class="container-fluid">
+    <div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        Highcharts.setOptions({
+            timezoneOffset: -8
+        });
+        $.getJSON('//data.jianshukeji.com/jsonp?filename=json/usdeur.json&callback=?', function (data) {
+            Highcharts.setOptions({
+                colors: ['#e9d1b8', '#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9',
+                    '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
+                xAxis: {
+                    type: 'datetime',
+                    dateTimeLabelFormats: {
+                        millisecond: '%H:%M:%S.%L',
+                        second: '%H:%M:%S',
+                        minute: '%H:%M',
+                        hour: '%H:%M',
+                        day: '%m-%d',
+                        week: '%m-%d',
+                        month: '%Y-%m-%d',
+                        year: '%Y'
+                    },
+                    crosshair: {
+                        color: '#e9d1b8',
+                        width: 1.5
+                    },
+                    labels: {
+                        style: {'color':'#8b8b8b','font-family': '繁简','font-size':'17px','font-weight': '900'},
+                        padding: 10,
+                        y: 40
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: ''
+                    },
+                    crosshair: {
+                        color: '#e9d1b8',
+                        width: 1.5
+                    },
+                    labels: {
+                        formatter: function(){
+                            return this.value.toFixed(2)
+                        },
+                        style:
+                        {"color":"#a2a2a2",'font-family': '繁简','font-size':'14px','font-weight': '400'}
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                tooltip: {
+                    dateTimeLabelFormats: {
+                        millisecond: '%H:%M:%S.%L',
+                        second: '%H:%M:%S',
+                        minute: '%H:%M',
+                        hour: '%H:%M',
+                        day: '%Y-%m-%d',
+                        week: '%m-%d',
+                        month: '%Y-%m-%d',
+                        year: '%Y'
+                    }
+                }
+            });
+            $('#container').highcharts({
+                chart: {
+                    zoomType: 'x'
+                },
+                title: {
+                    text: '累计净值：1.1540%',/*累计净值：${1.1540}%*/
+                    align: 'right',
+                    y: 60,
+                    style: {'font-family': '繁简','font-weight': 'bold'},
+                    margin: 60
+                },
+                subtitle: {
+                    text: document.ontouchstart === undefined ?
+                            '2015-5-16':'2015-5-16',/*${2015-5-16}（电脑）' : '${2015-5-16}（手机）*/
+                    align: 'left',
+                    y: 60,
+                    style: {'font-family': '繁简','font-size':'16px','font-weight': 'bold'},
+                    margin: 60
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    area: {
+                        fillColor: {
+                            linearGradient: {
+                                x1: 0,
+                                y1: 0,
+                                x2: 0,
+                                y2: 1
+                            },
+                            stops: [
+                                [0, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')],
+                                [0.2, Highcharts.getOptions().colors[0]]
+                            ]
+                        },
+                        marker: {
+                            radius: 2
+                        },
+                        lineWidth: 1,
+                        states: {
+                            hover: {
+                                lineWidth: 1
+                            }
+                        },
+                        threshold: null
+                    }
+                },
+                series: [{
+                    type: 'area',
+                    name: '净值',
+                    data: data
+                }]
+            });
+        });
+    });
+
+</script>
+</body>
+</html>
