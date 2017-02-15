@@ -16,6 +16,7 @@ public class ResultUtil {
 
     public static<E> Result getResult(E e) {
         List<E> it = new ArrayList<>();
+        it.add(e);
         return getResult(it);
     }
 

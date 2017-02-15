@@ -13,6 +13,10 @@ public class DateUtil {
     public static SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyyMMdd");
     public static SimpleDateFormat HHmmss = new SimpleDateFormat("HHmmss");
 
+    public static String getDate(String format) {
+        return new SimpleDateFormat(format).format(new Date());
+    }
+
     public static String getDate8() {
         Date date = new Date();
         return yyyyMMdd.format(date);
