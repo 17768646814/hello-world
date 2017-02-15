@@ -12,6 +12,8 @@
 
 
 <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+<button type="button" onclick="test();">测试</button>
 <script type="text/javascript">
 
 
@@ -86,8 +88,12 @@
         };
         //从后台拿================================================
         option = $.extend(option, json, true);
-        Highcharts.chart('container', option);
+        chart = Highcharts.chart('container', option);
     });
+    var chart = null;
+    function test() {
+        chart.series[0].setData([20, 20, 20, 2, 2, 2, 2, 2, 2, 2, 2, 2]);
+    }
 </script>
 </body>
 </html>

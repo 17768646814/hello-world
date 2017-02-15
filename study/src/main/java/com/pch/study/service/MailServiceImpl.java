@@ -31,7 +31,6 @@ public class MailServiceImpl implements MailService {
     @Autowired
     private JavaMailSenderImpl mailSender;
 
-
     @Override
     public Result<?> sendMail(ModelMap modelMap) {
         try {

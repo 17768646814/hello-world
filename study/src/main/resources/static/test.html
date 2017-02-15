@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/zclip/1.1.2/jquery.zclip.min.js"></script>
+    <style type="text/css">
+        .gap_lv1 {
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .gap_lv2 {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .gap_lv3 {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-copy {
+            position: absolute;
+            right: 20%;
+        }
+
+        .h3-toggle {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="row gap_lv2">
+            <div class="col-md-8">
+                <label for="author">作者</label>
+                <input type="text" class="form-control" id="author" placeholder="example: uo712" value="author">
+            </div>
+        </div>
+        <div class="row gap_lv2">
+            <div class="col-md-8">
+                <label for="module">模块名称</label>
+                <input type="text" class="form-control" id="module" placeholder="example: account" value="account">
+            </div>
+        </div>
+        <div class="row gap_lv2">
+            <div class="col-md-8">
+                <label for="entityName">entity类名</label>
+                <input type="text" class="form-control" id="entityName" placeholder="example: customer"
+                       value="customer">
+            </div>
+        </div>
+        <div class="row gap_lv2" id="fields">
+            <div class="col-md-12">
+                <label>entity成员</label>
+                <button type="button" class="btn btn-default" id="btn-add">增加</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="text-center">
+            <button type="button" class="btn btn-default" id="genJavaCode">生成</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#genJavaCode").click(function () {
+            var data = {
+                "author": $("#author").val(),
+                "module": $("#module").val(),
+                "entityName": $("#entityName").val()
+            }, count = -1;
+            $("input.fields").each(function () {
+                var key = "fields[" + (++count) + "]";
+                data[key] = this.value;
+            });
+            $.ajax({
+                url: "http://10.163.151.17:8888/javaCode/genJavaCode",
+                data: data,
+                success: function (data) {
+                    var content = data.content, type = $.type(content), $body = $("body"), $dataDiv =
+                            $("<div>").addClass("container gap_lv1").appendTo($body);//content一定是数组
+                    if (!$body.data("dataDiv")) {
+                        $body.data("dataDiv", $dataDiv);
+                    } else {
+                        $dataDiv = $body.data("dataDiv");
+                    }
+                    $dataDiv.empty();
+                    dataToHtml(null, content, $dataDiv);
+                }
+            });
+        });
+        $btnAdd = $("#btn-add"), $fields = $("#fields");
+        $btnAdd.click(function () {
+            var $row = $("<div>").addClass("row"),
+                    $inputDiv = $("<div>").addClass("col-md-8").appendTo($row),
+                    $input = $("<input>").attr({
+                        "type": "text",
+                        "placeholder": "example: String name"
+                    }).addClass("form-control fields").appendTo($inputDiv),
+                    $btnDiv = $("<div>").addClass("col-md-4").appendTo($row),
+                    $btnDel =
+                            $("<button>").attr({"type": "button"}).addClass("btn btn-default").html("删除").appendTo($btnDiv).click(function () {
+                                $row.remove();
+                            });
+            $row.insertAfter($btnAdd);
+        });
+    });
+    function dataToHtml(key, data, $container) {//model(数据)转换成view(html)
+        if (!data) return;
+        var type = $.type(data);
+        if (type == "object") {
+            for (i in data) {
+                dataToHtml(i, data[i], $container);
+            }
+        } else if (type == "string") {
+            var $btn =
+                            $("<button>").attr({"type": "button"}).addClass("btn btn-default btn-copy").html("复制").appendTo($container),
+                    $pre = $("<pre>").text(data).appendTo($container);
+            $btn.zclip({
+                path: '//cdn.bootcss.com/zclip/1.1.2/ZeroClipboard.swf',
+                copy: $pre.text(),
+                beforeCopy: function () {
+                    //some code
+                },
+                afterCopy: function () {
+                    alert($pre.text());
+                }
+            });
+        } else if (type == "array") {
+            var $div = $("<div>").addClass("gap_lv3").data(data).appendTo($container), $h3;
+            if (key || key === 0 || key === 'false' || key === false) {
+                $("<h3>").addClass("h3-toggle").html(key).click(function () {
+                    $div.toggle(500);
+                }).insertBefore($div);
+            }
+            for (var i = 0; i < data.length; i++) {
+                var d = data[i];
+                var $div_inner = $("<div>").addClass("gap_lv3").appendTo($div);
+                dataToHtml(i, d, $div_inner);
+            }
+        }
+    }
+</script>
+</body>
+</html>
