@@ -27,20 +27,33 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private LogService logService;
 
+    /**
+     * 添加filter
+     * @return
+     */
     @Bean
     public FilterRegistrationBean paramFilter() {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setFilter(new ParamFilter());
+//        filterRegistrationBean.setUrlPatterns(Arrays.asList("/*"));
         filterRegistrationBean.setUrlPatterns(Arrays.asList("/*"));
-        HttpServletRequest request;
         return filterRegistrationBean;
     }
 
+    /**
+     * 添加interceptor
+     * @param registry
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(new LogInterceptor(logService)).addPathPatterns("/**");
         registry.addInterceptor(new LogInterceptor(logService)).addPathPatterns("/**");
     }
 
+    /**
+     * ajax跨域配置
+     * @param registry
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")

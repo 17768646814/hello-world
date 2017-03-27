@@ -1,8 +1,10 @@
 server:
 #  port: 80
-  port: 8888
+  port: 8080
   contextPath: /
 spring:
+  profiles:
+    active: config
   mail:
     default-encoding: UTF-8
     host: 10.163.134.180
@@ -14,15 +16,18 @@ spring:
   aop:
     auto: true
   jpa:
-#    database: MYSQL
-    database: ORACLE
+    database: MYSQL
+#    database: ORACLE
     show-sql: true
     hibernate:
       ddl-auto: update
   datasource:
-#    url: jdbc:mysql://localhost:3306/pch
-#    username: root
-#    password: 1234
-    url: jdbc:oracle:thin:@10.169.4.33:5001:dspdb
-    username: econe
-    password: password
+    url: jdbc:mysql://localhost:3306/pch
+    username: root
+    password: 1234
+#    url: jdbc:oracle:thin:@10.169.4.33:5001:dspdb
+#    username: econe
+#    password: password
+logging:
+  file:
+    study.log

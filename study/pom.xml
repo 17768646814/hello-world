@@ -7,16 +7,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>study</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
-
-        <dependency>
-            <groupId>com.pch</groupId>
-            <artifactId>common</artifactId>
-            <version>${com.pch.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>com.pch</groupId>
             <artifactId>sys</artifactId>
@@ -25,7 +18,14 @@
 
     </dependencies>
 
+
     <build>
         <finalName>hello-world</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 </project>

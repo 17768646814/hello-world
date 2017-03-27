@@ -22,7 +22,6 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
         this.logService = logService;
     }
 
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (!request.getRequestURI().contains(".")) {
