@@ -47,8 +47,7 @@ public class HomeController {
     @RequestMapping(value = "/say", method = {RequestMethod.GET})
     @ApiOperation(value = "默认页面", notes = "home.say")
     public String say(@ApiParam(name = "word",value = "语句",required = false) @RequestParam(required = false, defaultValue = "nothing") String word) {
-        System.out.println("aaa = " + env.getProperty("aaa"));
-        System.out.println("bbb = " + env.getProperty("bbb"));
+        System.out.println(String.format("server.context-path[%s]", env.getProperty("server.context-path")));
         return String.format("you said => %s", word);
     }
 
