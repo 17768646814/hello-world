@@ -64,33 +64,15 @@
             <version>${swagger2.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.blingblingbang/ueditor -->
-        <!--<dependency>
-            <groupId>com.blingblingbang</groupId>
-            <artifactId>ueditor</artifactId>
-            <version>1.1.2</version>
-        </dependency>-->
-
-        <!--<dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
-            <scope>provided</scope>
-        </dependency>-->
-        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc7</artifactId>
-            <version>12.1.0.2</version>
-        </dependency>-->
     </dependencies>
 
 </project>
